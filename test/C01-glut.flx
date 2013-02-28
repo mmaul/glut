@@ -1,0 +1,8 @@
+include "PKGTOOL/pkgtool";
+open PkgTool;
+requires package "glut";
+const GL_BLUE:int requires header '#include <GL/glut.h>';
+assert_true(GL_BLUE == GL_BLUT, "Checking glut functionality", """
+  Unable to access Glut.
+    Make usre GLUT is installed. If it is installed tell
+    setup where the header and library files are at with the -I and -L switches. """);

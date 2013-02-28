@@ -1,0 +1,6 @@
+include "PKGTOOL/pkgtool";
+include "GLUT/glut";
+open PkgTool;
+open GLUT;
+
+assert_true(GLUT_BLUE == GLUT_BLUE,"Test library accessability");

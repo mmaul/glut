@@ -1,0 +1,56 @@
+include "PKGTOOL/pkgtool";
+BUILD_LIKE = Lib;
+ 
+open PkgTool;
+open Filename;
+
+instance PkgTool {
+
+  proc build () {
+    task("Determining zlib configuration");
+    var inc = "zlib.h";
+    var lib_name = "libglut.so";
+    var includes = "";
+    for path in list ("/usr/include","/usr/local/include",EXTRA_INCDIR) do
+      match filetype(path.join(inc)) with
+      |REGULAR => { includes = path; goto found_lib_h; }
+      |SYMLINK => { includes = path; goto found_lib_h; }
+      |_ => {}
+      endmatch;
+    done
+    setup_fail("Unable to find " + inc + " Please locate and pass path to setup with the -L switch");
+    setup_fail("Unable to find " + inc + ". Please locate and pass path to setup with the -L switch");
+found_lib_h:>
+    
+    var lib_path = "";
+    for path in list ("/lib","/usr/lib","/usr/local/lib",EXTRA_LIBDIR) do
+      match filetype(path.join(lib_name)) with
+      |REGULAR => { EXTRA_LIBDIR = "-L" + path; goto found_lib; }
+      |SYMLINK => { EXTRA_LIBDIR = "-L" + path; goto found_lib; }
+      |_ => { }
+      endmatch;
+    done
+    setup_fail("Unable to find " + lib + ". Please locate and pass path to setup with the -L switch");
+found_lib:>
+    task("Creating config/" + NAME + ".fpc");
+    var fpc:ofile = fopen_output((BUILD_DIR.join("config")).join(NAME + ".fpc"));
+    if valid(fpc) do
+      var fpc_s:string = q"""
+Name: GLUT
+cflags: $(EXTRA_INCDIR)
+Description: GLUT graphics
+requires_dlibs: $(EXTRA_LIBDIR) -lglut
+requires_slibs: $(EXTRA_LIBDIR) -lglut
+Requires: gl glu
+""";
+    write (fpc,fpc_s);
+    fclose(fpc);
+    run_test("C01-glut.flx",true);
+  else
+    red("Failed creating "+NAME+".fpc");endl;System::exit(-1);
+  done 
+    default_build();
+  }
+}
+
+SetupTool::run();
