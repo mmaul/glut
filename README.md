@@ -14,6 +14,7 @@ CATEGORY: GUI GL
 
 LIBDIR: GLUT
 
+DEPENDENCIES: gl, glu
 -----
 Quickstart 
 

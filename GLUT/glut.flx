@@ -11,7 +11,7 @@
 include "GL/gl_lib";
 include "GL/glu_lib";
 
-module GL_glut_h
+class GLUT
 {
   requires package "glut";
   header '#include "GL/glut.h"';
