@@ -13,8 +13,45 @@ include "OPENGL/glu";
 
 class GLUT
 {
-  requires package "glut";
-  header '#include "GL/glut.h"';
+  requires package "opengl-glut";
+  typedef cb_t = address --> void;
+  header  """
+typedef void (Callback_Proxy )(void*);
+typedef int (Callback_Proxy1 )(int,void*);
+typedef void (Callback_Proxy2 )(void*,void*);
+typedef int (Callback_Proxy3 )(void*,int,void*);
+  Callback_Proxy *proxy_callback;
+  void* proxy_callback_data;
+
+  void glutDisplayFuncProxy() {
+    if(proxy_callback_data) {
+      proxy_callback(proxy_callback_data);
+    }
+  }
+  void set_callback(Callback_Proxy cb,void * client_data) {
+    proxy_callback = cb;
+    proxy_callback_data = client_data;
+    glutDisplayFunc(glutDisplayFuncProxy);    
+  }
+
+""";
+  callback proc callback_proxy: callback_proxy;
+  typedef c_handler_t = address --> void;
+  typedef f_handler_t = 1->void;
+
+  callback fun callback_proxy1: int*callback_proxy1->int;
+  typedef c_handler1_t = int*address --> int;
+  typedef f_handler1_t = int->int;
+
+  callback proc callback_proxy2: address*callback_proxy2;
+  typedef c_handler2_t = address*address --> void;
+  typedef f_handler2_t = address->void;
+ 
+  callback fun callback_proxy3: address*int*callback_proxy3->int;
+  typedef c_handler3_t = address*int*address --> int;
+  typedef f_handler3_t = address*int->int;
+
+  proc set_callback:c_handler_t*f_handler_t = "set_callback($1,$2);";
   open C_hack;
   open GL;
   open GLU;

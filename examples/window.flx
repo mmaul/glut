@@ -1,0 +1,40 @@
+//$ OpenGL Tutorial
+// Initialization - 
+include "GLUT/glut";
+include "OPENGL/gl";
+open GL;
+open GLUT;
+open Bits[int];
+open C_hack;
+typedef cb_t = address --> void;
+var angle = 0.0f;
+proc render_cb () {
+  glClear(GL_COLOR_BUFFER_BIT \| GL_DEPTH_BUFFER_BIT);
+  glBegin(GL_TRIANGLES);
+  glRotatef(float(angle), 0.0f, 0.0f, 1.0f);
+  glColor3ub(255ut, 255ut, 0ut); 
+  glVertex3f(-0.5f,-0.5f,0.0f);
+  glVertex3f(0.5f,0.0f,0.0f);
+  glVertex3f(0.0f,0.5f,0.0f);
+  glEnd();
+  glutSwapBuffers();
+}
+var sys_clock =  #Faio::mk_alarm_clock;
+
+
+
+
+var argc = System::argc;
+glutInit(&argc, System::_argv);
+
+glutInitDisplayMode(cast[uint](bor(GLUT_DOUBLE,GLUT_RGBA)));
+//$ Setup window
+glutInitWindowSize(300, 300);
+glutInitWindowPosition(100, 100);
+//$ note glutCreateWindow requires type char & uint hence -  
+ignore(glutCreateWindow(-(cstr("window2"))));
+set_callback(cast[c_handler_t](callback_proxy),render_cb);
+glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+glutMainLoop();
+
+

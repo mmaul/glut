@@ -7,8 +7,8 @@ open Filename;
 instance PkgTool {
 
   proc build () {
-    create_config("glut",list("GL/glut.h"),
-      list("libglut"+#Config::config.EXT_SHLIB),list("gl","glu"));
+    create_config("opengl-glut",list("GL/glut.h"),
+      list("libglut"+#Config::config.EXT_SHLIB),list("opengl-gl","opengl-glu"));
     default_build();
   }
 }
