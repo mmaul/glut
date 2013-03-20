@@ -1,4 +1,4 @@
-include "PKGTOOL/pkgtool";
+include "std/felix/pkgtool";
 open PkgTool;
 requires package "glut";
 const GL_BLUE:int requires header '#include <GL/glut.h>';
